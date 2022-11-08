@@ -22,7 +22,7 @@ class Cart with ChangeNotifier {
   }
 
   int get itemCount {
-    return  _items.length;
+    return _items.length;
   }
 
   double get totalAmount {
@@ -53,11 +53,30 @@ class Cart with ChangeNotifier {
                 quantity: 1,
               ));
     }
-      notifyListeners();
+    notifyListeners();
   }
 
-  void removeItem(String productId){
+  void removeItem(String productId) {
     _items.remove(productId);
+    notifyListeners();
+  }
+
+  void removeSingleItem(String productId) {
+    if (!_items.containsKey(productId)) {
+      return;
+    }
+    if (_items[productId].quantity > 1) {
+      _items.update(
+          productId,
+          (existingCardItem) => CartItem(
+                id: existingCardItem.id,
+                title: existingCardItem.title,
+                price: existingCardItem.price,
+                quantity: existingCardItem.quantity - 1,
+              ));
+    } else {
+      _items.remove(productId);
+    }
     notifyListeners();
   }
 
